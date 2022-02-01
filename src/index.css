@@ -19,7 +19,7 @@ button {
   background-color: #7a0144;
   border: 1px solid #7a0144;
   border-radius: 20px;
-  padding: 0.5rem 2rem;
+  padding: 0.7rem 2rem;
   color: white;
 }
 
@@ -27,4 +27,12 @@ button:hover,
 button:active {
   background-color: #9c095a;
   border-color: #9c095a;
+}
+button:disabled{
+  cursor: not-allowed;
+  background: #ccc;
+  border: #ccc;
+}
+.invalid input,.invalid input:focus {
+  border-bottom: 1px solid #b40e0e !important;
 }

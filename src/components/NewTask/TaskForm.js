@@ -1,25 +1,46 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 
 import classes from './TaskForm.module.css';
 
 const TaskForm = (props) => {
-  const taskInputRef = useRef();
+  const [enteredInput, setEnteredInput] = useState('');
+  const [isInputTouched, setIsInputTouched] = useState(false);
+  const isEmpty = enteredInput.trim().length === 0;
+  const isValid = isEmpty && isInputTouched;
+  let isFormValid = false;
+  if(enteredInput){
+    isFormValid = true;
+  }
+
+  const inputChangeHandler = event => {
+    setEnteredInput(event.target.value);
+  }
   
+  const inputBlurHandler = () => {
+   setIsInputTouched(true);
+  }
+
   const submitHandler = (event) => {
     event.preventDefault();
-
-    const enteredValue = taskInputRef.current.value;
-
-    if (enteredValue.trim().length > 0) {
-      props.onEnterTask(enteredValue);
+    setIsInputTouched(true);
+    if (isEmpty) {
+      return;
     }
-    taskInputRef.current.value = '';
+    props.onEnterTask(enteredInput);
+      // console.log(enteredInput);
+    // taskInputRef.current.value = '';  // Not recommended because it's directly manipulating DOM
+    setEnteredInput('');
+    setIsInputTouched(false);
   };
+  const formClasses = isValid? `${classes.form} invalid`: `${classes.form}`;
 
   return (
-    <form className={classes.form} onSubmit={submitHandler}>
-      <input type='text' ref={taskInputRef} />
-      <button>{props.loading ? 'Sending...' : 'Add Task'}</button>
+    <form className={formClasses} onSubmit={submitHandler}>
+      <div className={classes['control-group']}>
+        <input type='text' onChange={inputChangeHandler} onBlur = {inputBlurHandler} value={enteredInput}/>
+        {isValid && <p className={classes['error-text']}>Your Input is Empty</p>}
+      </div>
+      <button disabled={!isFormValid}>{props.loading ? 'Sending...' : 'Add Task'}</button>
     </form>
   );
 };
